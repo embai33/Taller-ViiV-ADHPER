@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0e2356">
+<title>FOCO VIH · Taller: casos de uso hospitalario powered by AI</title>
+<meta name="description" content="Web de apoyo del taller «Casos de uso hospitalario powered by AI» de la reunión FOCO VIH.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23d50120'/%3E%3Cstop offset='1' stop-color='%23273a72'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='12' fill='url(%23g)'/%3E%3Cpath d='M32 10l4 14 14 4-14 4-4 14-4-14-14-4 14-4z' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Paleta tomada del programa del taller (logotipo y agenda) */
+    --azul:        #0e2356;   /* Azul marino del logotipo FOCO VIH */
+    --azul-texto:  #071d49;   /* Texto principal de la agenda */
+    --azul-medio:  #273a72;   /* Final del degradado del símbolo */
+    --rojo:        #e40146;   /* Rojo de acento (AGENDA, «AI», barras) */
+    --rojo-logo:   #dd062a;   /* Rojo de «POWERED BY» */
+    --gris-fondo:  #f8f8f8;   /* Fondo de los bloques de la agenda */
+    --gris-borde:  #e1e4ec;
+    --blanco:      #ffffff;
+    --texto:       #071d49;
+    --texto-sec:   #55627f;
+    --degradado:   linear-gradient(90deg, #d50120 0%, #95143e 45%, #273a72 100%);
+    --radius:      8px;
+    --fuente-titulo: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --fuente-texto:  "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --alto-header: 64px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    font-family: var(--fuente-texto);
+    line-height: 1.5;
+    color: var(--texto);
+    background: var(--blanco);
+  }
+
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid rgba(228,1,70,0.45); outline-offset: 2px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .container { max-width: 1040px; margin: 0 auto; padding: 0 1.5rem; }
+
+  /* ── Header ── */
+  header {
+    position: sticky; top: 0; z-index: 500;
+    background: var(--azul);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border-bottom: 3px solid transparent;
+    border-image: var(--degradado) 1;
+  }
+  .header-in {
+    max-width: 1040px; margin: 0 auto;
+    min-height: var(--alto-header);
+    padding: 0.5rem 1.5rem;
+    display: flex; align-items: center; gap: 1.25rem;
+  }
+  .marca {
+    display: flex; flex-direction: column; text-decoration: none; line-height: 1.15;
+  }
+  .marca strong { font-family: var(--fuente-titulo); font-weight: 700; font-size: 1.15rem; letter-spacing: 0.04em; }
+  .marca span { font-size: 0.78rem; opacity: 0.8; }
+  header nav { margin-left: auto; display: flex; gap: 0.25rem; }
+  header nav a {
+    text-decoration: none; color: #fff; opacity: 0.85;
+    padding: 0.5rem 0.85rem; border-radius: var(--radius);
+    font-size: 0.9rem; font-weight: 600; white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: background 0.2s, opacity 0.2s;
+  }
+  header nav a:hover { background: rgba(255,255,255,0.1); opacity: 1; }
+  header nav a.activo { opacity: 1; border-bottom-color: var(--rojo); background: rgba(255,255,255,0.08); }
+  .btn-info {
+    width: 36px; height: 36px; flex: none;
+    border: 1.5px solid rgba(255,255,255,0.55); border-radius: 50%;
+    background: transparent; color: #fff; font-size: 1.05rem; font-weight: 700;
+    cursor: pointer; font-family: Georgia, serif; font-style: italic;
+    transition: background 0.2s;
+  }
+  .btn-info:hover { background: rgba(255,255,255,0.15); }
+
+  /* ── Portada ── */
+  .hero {
+    background:
+      radial-gradient(1200px 420px at 50% -10%, #ffffff 0%, rgba(255,255,255,0) 70%),
+      linear-gradient(180deg, #ffffff 0%, var(--gris-fondo) 100%);
+    padding: 3.5rem 0 4rem;
+    text-align: center;
+    scroll-margin-top: var(--alto-header);
+  }
+  .hero h1 { margin: 0; line-height: 0; }
+  .hero h1 img { width: min(560px, 82%); height: auto; }
+  .hero .taller {
+    font-family: var(--fuente-titulo);
+    font-weight: 700;
+    font-size: clamp(1.7rem, 4.6vw, 3.1rem);
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+    color: var(--azul);
+    margin: 1.75rem auto 0;
+    max-width: 880px;
+  }
+  .hero .taller .ai { color: var(--rojo); }
+  .hero .meta {
+    display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 0.35rem 1rem;
+    margin: 1.5rem 0 0; padding: 0; list-style: none;
+    font-size: 0.95rem; color: var(--texto-sec);
+  }
+  .hero .meta li strong { color: var(--azul-texto); }
+  .hero .meta li + li { border-left: 2px solid var(--rojo); padding-left: 1rem; }
+
+  .opciones {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem;
+    margin: 3rem auto 0; max-width: 860px; text-align: left;
+  }
+  .opcion {
+    display: flex; flex-direction: column; gap: 0.35rem;
+    background: var(--blanco);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--rojo);
+    padding: 1.25rem 1.3rem 1.1rem;
+    text-decoration: none;
+    box-shadow: 0 1px 4px rgba(7,29,73,0.08);
+    transition: box-shadow 0.2s, transform 0.15s;
+  }
+  .opcion:hover { box-shadow: 0 6px 18px rgba(7,29,73,0.15); transform: translateY(-2px); }
+  .opcion .icono {
+    width: 44px; height: 44px; border-radius: 10px; margin-bottom: 0.4rem;
+    display: grid; place-items: center; color: #fff;
+    background: linear-gradient(135deg, #d50120, #273a72);
+  }
+  .opcion .icono svg { width: 24px; height: 24px; }
+  .opcion h3 { margin: 0; font-family: var(--fuente-titulo); font-size: 1.1rem; font-weight: 700; color: var(--azul); }
+  .opcion p { margin: 0; font-size: 0.9rem; color: var(--texto-sec); flex: 1; }
+  .opcion .ir { margin-top: 0.6rem; font-size: 0.85rem; font-weight: 700; color: var(--rojo); }
+  .opcion .ir::after { content: " →"; transition: margin-left 0.2s; }
+  .opcion:hover .ir::after { margin-left: 4px; }
+
+  /* ── Secciones ── */
+  section.apartado {
+    padding: 4rem 0;
+    scroll-margin-top: var(--alto-header);
+  }
+  section.apartado:nth-of-type(odd) { background: var(--blanco); }
+  section.apartado.alt { background: var(--gris-fondo); }
+  .eyebrow {
+    margin: 0; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--texto-sec);
+  }
+  section.apartado h2 {
+    margin: 0.2rem 0 0.5rem;
+    font-family: var(--fuente-titulo);
+    font-size: clamp(1.6rem, 3.4vw, 2.1rem); font-weight: 800; letter-spacing: 0.01em;
+    text-transform: uppercase; color: var(--rojo);
+  }
+  section.apartado .intro { margin: 0 0 1.75rem; max-width: 640px; color: var(--texto-sec); }
+
+  /* Bloque de contenido pendiente (mismo lenguaje visual que la agenda) */
+  .pendiente {
+    background: var(--gris-fondo);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.6rem;
+    display: flex; gap: 1.25rem; align-items: stretch;
+  }
+  section.alt .pendiente { background: var(--blanco); box-shadow: 0 1px 4px rgba(7,29,73,0.08); }
+  .pendiente .barra { width: 3px; background: var(--rojo); border-radius: 2px; flex: none; }
+  .pendiente strong { display: block; font-size: 1.05rem; color: var(--azul); }
+  .pendiente span { color: var(--texto-sec); font-size: 0.92rem; }
+
+
+  /* ── Agenda (mismo lenguaje visual que el programa: bloque gris + barra roja) ── */
+  .agenda { list-style: none; margin: 0; padding: 0; background: var(--gris-fondo); border-radius: var(--radius); padding: 0.5rem 0; }
+  .agenda li {
+    display: grid; grid-template-columns: 96px 3px 1fr; gap: 0 1.25rem; align-items: stretch;
+    padding: 1rem 1.6rem;
+  }
+  .agenda .duracion { font-size: 1.15rem; color: var(--azul-texto); line-height: 1.3; }
+  .agenda .duracion b { font-family: var(--fuente-titulo); font-size: 1.5rem; font-weight: 700; }
+  .agenda .barra { background: var(--rojo); border-radius: 2px; }
+  .agenda h3 { margin: 0; font-size: 1.05rem; font-weight: 700; line-height: 1.35; color: var(--azul-texto); }
+  .agenda .escala { margin-top: 0.6rem; height: 6px; border-radius: 3px; background: var(--gris-borde); overflow: hidden; }
+  .agenda .escala i { display: block; height: 100%; border-radius: 3px; background: var(--degradado); }
+  .agenda-total { margin: 0.9rem 0 0; font-size: 0.9rem; color: var(--texto-sec); text-align: right; }
+  .agenda-total strong { color: var(--azul-texto); }
+
+  /* ── Ejercicio práctico ── */
+  .ej-info { background: var(--blanco); border-radius: var(--radius); box-shadow: 0 1px 4px rgba(7,29,73,0.08); border-left: 4px solid var(--rojo); padding: 0.9rem 1.2rem; margin-bottom: 1.25rem; }
+  .ej-info p { margin: 0.2rem 0; font-size: 0.9rem; }
+  .ej-indice { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+  .ej-indice a {
+    text-decoration: none; font-size: 0.85rem; font-weight: 600; color: var(--azul);
+    background: var(--blanco); border: 1px solid var(--gris-borde); border-radius: 999px; padding: 0.35rem 0.9rem;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .ej-indice a:hover { background: var(--azul); color: #fff; border-color: var(--azul); }
+
+  details.paso { background: var(--blanco); border-radius: var(--radius); box-shadow: 0 1px 4px rgba(7,29,73,0.08); margin-bottom: 1rem; border-left: 4px solid var(--rojo); scroll-margin-top: calc(var(--alto-header) + 12px); }
+  details.paso summary {
+    list-style: none; cursor: pointer; display: flex; align-items: center; gap: 0.9rem;
+    padding: 1rem 1.3rem;
+  }
+  details.paso summary::-webkit-details-marker { display: none; }
+  details.paso summary::after {
+    content: ""; margin-left: auto; flex: none; width: 10px; height: 10px;
+    border-right: 2.5px solid var(--azul); border-bottom: 2.5px solid var(--azul);
+    transform: rotate(45deg); transition: transform 0.2s;
+  }
+  details.paso[open] summary::after { transform: rotate(-135deg); }
+  .paso-chip { flex: none; background: var(--rojo); color: #fff; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.25rem 0.65rem; border-radius: 999px; }
+  .paso-titulo { font-family: var(--fuente-titulo); font-weight: 700; font-size: 1.05rem; color: var(--azul); line-height: 1.3; }
+  .paso-cuerpo { padding: 0.25rem 1.3rem 1.4rem; border-top: 1px solid var(--gris-borde); }
+  .paso-cuerpo p { margin: 0.4rem 0; font-size: 0.93rem; }
+  .paso-cuerpo ul, .paso-cuerpo ol { margin: 0.4rem 0; padding-left: 1.3rem; font-size: 0.93rem; }
+  .paso-cuerpo li { margin: 0.3rem 0; }
+  .paso-cuerpo ul li::marker { color: var(--rojo); }
+  .paso-cuerpo code { background: #eef1f7; color: var(--azul-texto); padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.88em; }
+  .ej-label { display: block; margin: 1.2rem 0 0.15rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--rojo); }
+  .ej-rapido { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 1.75rem; }
+  .ej-rapido p { color: var(--texto); }
+
+  .prompt { margin: 1.4rem 0 0.4rem; border-radius: var(--radius); overflow: hidden; background: #0b1c47; box-shadow: 0 2px 8px rgba(7,29,73,0.25); }
+  .prompt-cab { display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 0.9rem; background: var(--degradado); color: #fff; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .btn-copiar { border: 1.5px solid rgba(255,255,255,0.8); background: rgba(255,255,255,0.12); color: #fff; font-size: 0.8rem; font-weight: 600; padding: 0.3rem 0.85rem; border-radius: 999px; cursor: pointer; transition: background 0.2s; }
+  .btn-copiar:hover { background: rgba(255,255,255,0.28); }
+  .btn-copiar.ok { background: #27ae60; border-color: #27ae60; }
+  .prompt pre { margin: 0; padding: 1rem 1.1rem; overflow-x: auto; }
+  .prompt pre code { background: none; color: #f1f4fb; padding: 0; font-size: 0.86rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+  .tabla-ej { overflow-x: auto; margin: 0.5rem 0; border: 1px solid var(--gris-borde); border-radius: var(--radius); }
+  .tabla-ej table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+  .tabla-ej th { background: var(--gris-fondo); text-align: left; padding: 0.55rem 0.75rem; font-size: 0.72rem; text-transform: uppercase; color: var(--texto-sec); letter-spacing: 0.03em; }
+  .tabla-ej td { padding: 0.55rem 0.75rem; border-top: 1px solid var(--gris-borde); vertical-align: top; }
+  .tabla-ej td:first-child { width: 42%; }
+  .nota { color: var(--texto-sec); font-size: 0.85rem !important; }
+
+
+  /* ── Herramientas ── */
+  .herramientas { display: grid; gap: 1rem; }
+  .herramienta {
+    display: grid; grid-template-columns: 52px 1fr auto; gap: 0 1.2rem; align-items: center;
+    background: var(--blanco); border-radius: var(--radius); border-left: 4px solid var(--rojo);
+    padding: 1.1rem 1.4rem; text-decoration: none; color: inherit;
+    box-shadow: 0 1px 4px rgba(7,29,73,0.08);
+    transition: box-shadow 0.2s, transform 0.15s;
+  }
+  a.herramienta:hover { box-shadow: 0 6px 18px rgba(7,29,73,0.15); transform: translateY(-2px); }
+  .herramienta .icono {
+    width: 52px; height: 52px; border-radius: 12px; display: grid; place-items: center; color: #fff;
+    background: linear-gradient(135deg, #d50120, #273a72);
+  }
+  .herramienta .icono svg { width: 26px; height: 26px; }
+  .herramienta h3 { margin: 0; font-family: var(--fuente-titulo); font-size: 1.05rem; font-weight: 700; color: var(--azul); line-height: 1.3; }
+  .herramienta p { margin: 0.2rem 0 0; font-size: 0.9rem; color: var(--texto-sec); }
+  .herramienta .abrir { font-size: 0.85rem; font-weight: 700; color: var(--rojo); white-space: nowrap; }
+  .herramienta .abrir::after { content: " ↗"; }
+
+  /* ── Footer ── */
+  footer { background: var(--azul); color: #fff; }
+  footer .franja { height: 4px; background: var(--degradado); }
+  .footer-in {
+    max-width: 1040px; margin: 0 auto; padding: 1.75rem 1.5rem;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 2rem; justify-content: space-between;
+    font-size: 0.85rem;
+  }
+  footer .titulo { font-family: var(--fuente-titulo); font-weight: 600; }
+  footer .titulo .ai { color: #ff5c86; }
+  footer a { color: #fff; opacity: 0.85; }
+  footer a:hover { opacity: 1; }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.45);
+    display: none; align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modal-overlay.abierto { display: flex; }
+  .modal-box {
+    background: var(--blanco); border-radius: var(--radius);
+    max-width: 440px; width: 100%; padding: 1.5rem;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+  .modal-box h2 { margin: 0 0 0.75rem; font-family: var(--fuente-titulo); font-size: 1.1rem; font-weight: 700; color: var(--azul); }
+  .modal-box p { margin: 0 0 0.75rem; font-size: 0.9rem; }
+  .modal-box .disclaimer { color: var(--texto-sec); font-size: 0.85rem; }
+  .modal-cierre { display: flex; justify-content: flex-end; margin-top: 1rem; }
+  .btn {
+    padding: 0.6rem 1.2rem; border: none; border-radius: var(--radius);
+    font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: background 0.2s;
+  }
+  .btn-primary { background: var(--azul); color: #fff; }
+  .btn-primary:hover { background: var(--rojo); }
+  .modal-footer {
+    margin-top: 1.25rem; padding-top: 0.9rem; border-top: 1px solid var(--gris-borde);
+    font-size: 0.82rem; color: var(--texto-sec); display: flex; gap: 0.35rem; align-items: center;
+  }
+  .modal-footer a { font-weight: 700; color: var(--azul); }
+
+  /* ── Responsive ── */
+  @media (max-width: 860px) {
+    .ej-rapido { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .opciones { grid-template-columns: 1fr; max-width: 520px; }
+  }
+  @media (max-width: 700px) {
+    .header-in { flex-wrap: wrap; padding: 0.6rem 1rem; gap: 0.4rem 0.75rem; }
+    .marca span { display: none; }
+    .btn-info { margin-left: auto; order: 2; }
+    .marca { order: 1; }
+    header nav {
+      order: 3; width: 100%; margin-left: 0; overflow-x: auto; padding-bottom: 0.2rem;
+      scrollbar-width: none;
+    }
+    header nav::-webkit-scrollbar { display: none; }
+    :root { --alto-header: 100px; }
+  }
+  @media (max-width: 600px) {
+    .container, .footer-in { padding-left: 1rem; padding-right: 1rem; }
+    .hero { padding: 2.25rem 0 2.75rem; }
+    .hero .meta li + li { border-left: none; padding-left: 0; }
+    section.apartado { padding: 2.75rem 0; }
+    .pendiente { padding: 1.1rem; }
+    .agenda li { grid-template-columns: 3px 1fr; padding: 0.9rem 1.1rem; gap: 0 1rem; }
+    .agenda .duracion { grid-column: 2; grid-row: 1; margin-bottom: 0.15rem; font-size: 0.95rem; }
+    .agenda .duracion b { font-size: 1.2rem; }
+    .agenda .barra { grid-column: 1; grid-row: 1 / span 2; }
+    .agenda .contenido { grid-column: 2; grid-row: 2; }
+    .agenda-total { text-align: left; }
+    .herramienta { grid-template-columns: 44px 1fr; padding: 1rem 1.1rem; gap: 0 0.9rem; }
+    .herramienta .icono { width: 44px; height: 44px; }
+    .herramienta .abrir { grid-column: 2; margin-top: 0.5rem; }
+    details.paso summary { padding: 0.85rem 1rem; gap: 0.6rem; }
+    .paso-cuerpo { padding: 0.25rem 1rem 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-in">
+    <a class="marca" href="#inicio" aria-label="Ir al inicio">
+      <strong>FOCO VIH</strong>
+      <span>Taller · casos de uso hospitalario</span>
+    </a>
+    <nav aria-label="Secciones de la web">
+      <a href="#programa">Programa</a>
+      <a href="#materiales">Materiales de trabajo</a>
+      <a href="#herramientas">Herramientas</a>
+      <a href="#ejercicio">Ejercicio práctico</a>
+    </nav>
+    <button class="btn-info" id="btnInfo" aria-label="Acerca de esta aplicación" aria-haspopup="dialog">i</button>
+  </div>
+</header>
+
+<main>
+  <!-- ═════════ PORTADA ═════════ -->
+  <div class="hero" id="inicio">
+    <div class="container">
+      <h1><img src="assets/foco-vih.png" width="900" height="185" alt="FOCO VIH"></h1>
+      <h2 class="taller">Taller: casos de uso hospitalario powered by <span class="ai">AI</span></h2>
+
+      <ul class="meta">
+        <li><strong>Sábado 3 de octubre</strong></li>
+        <li>Espacio BLOKE · C/ Cedaceros, 5 · Madrid</li>
+      </ul>
+
+      <div class="opciones" role="list">
+        <a class="opcion" href="#programa" role="listitem">
+          <span class="icono" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/></svg>
+          </span>
+          <h3>Programa</h3>
+          <p>Agenda y contenidos de la sesión.</p>
+          <span class="ir">Ver programa</span>
+        </a>
+        <a class="opcion" href="#materiales" role="listitem">
+          <span class="icono" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H7a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-12z"/><path d="M14 2.5v5h5M9 13h6M9 17h6"/></svg>
+          </span>
+          <h3>Materiales de trabajo</h3>
+          <p>Ficheros y guías para los ejercicios.</p>
+          <span class="ir">Ver materiales</span>
+        </a>
+        <a class="opcion" href="#herramientas" role="listitem">
+          <span class="icono" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg>
+          </span>
+          <h3>Herramientas</h3>
+          <p>Aplicaciones y recursos que utilizaremos.</p>
+          <span class="ir">Ver herramientas</span>
+        </a>
+        <a class="opcion" href="#ejercicio" role="listitem">
+          <span class="icono" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6-6-6M12 19h8"/></svg>
+          </span>
+          <h3>Ejercicio práctico</h3>
+          <p>Construimos juntos una aplicación paso a paso.</p>
+          <span class="ir">Ir al ejercicio</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════ PROGRAMA ═════════ -->
+  <section class="apartado" id="programa" aria-labelledby="t-programa">
+    <div class="container">
+      <p class="eyebrow">Taller · 3 de octubre</p>
+      <h2 id="t-programa">Programa</h2>
+      <p class="intro">Contenidos de la sesión y duración de cada bloque.</p>
+      <ol class="agenda">
+        <li>
+          <div class="duracion"><b>5</b> min</div>
+          <div class="barra"></div>
+          <div class="contenido">
+            <h3>Introducción al vibe coding</h3>
+            <div class="escala" aria-hidden="true"><i style="width:6.7%"></i></div>
+          </div>
+        </li>
+        <li>
+          <div class="duracion"><b>5</b> min</div>
+          <div class="barra"></div>
+          <div class="contenido">
+            <h3>Introducción a Claude</h3>
+            <div class="escala" aria-hidden="true"><i style="width:6.7%"></i></div>
+          </div>
+        </li>
+        <li>
+          <div class="duracion"><b>45</b> min</div>
+          <div class="barra"></div>
+          <div class="contenido">
+            <h3>Diseño y creación de una aplicación (versión mínima viable) de seguimiento de adherencia y persistencia en VIH con Claude Code</h3>
+            <div class="escala" aria-hidden="true"><i style="width:60.0%"></i></div>
+          </div>
+        </li>
+        <li>
+          <div class="duracion"><b>5</b> min</div>
+          <div class="barra"></div>
+          <div class="contenido">
+            <h3>Ejemplo de desarrollo de una aplicación similar totalmente funcional</h3>
+            <div class="escala" aria-hidden="true"><i style="width:6.7%"></i></div>
+          </div>
+        </li>
+        <li>
+          <div class="duracion"><b>5</b> min</div>
+          <div class="barra"></div>
+          <div class="contenido">
+            <h3>Cómo hacer accesible la aplicación a otros usuarios</h3>
+            <div class="escala" aria-hidden="true"><i style="width:6.7%"></i></div>
+          </div>
+        </li>
+        <li>
+          <div class="duracion"><b>10</b> min</div>
+          <div class="barra"></div>
+          <div class="contenido">
+            <h3>Resolución de dudas, comentarios y preguntas</h3>
+            <div class="escala" aria-hidden="true"><i style="width:13.3%"></i></div>
+          </div>
+        </li>
+      </ol>
+      <p class="agenda-total">Duración total: <strong>75 minutos</strong></p>
+    </div>
+  </section>
+
+  <!-- ═════════ MATERIALES ═════════ -->
+  <section class="apartado alt" id="materiales" aria-labelledby="t-materiales">
+    <div class="container">
+      <p class="eyebrow">Para trabajar durante el taller</p>
+      <h2 id="t-materiales">Materiales de trabajo</h2>
+      <p class="intro">Ficheros de datos y guías que utilizaremos en los ejercicios.</p>
+      <div class="herramientas">
+        <a class="herramienta" href="https://docs.google.com/spreadsheets/d/1098O1sud9nLH8GeifSDJr9wxIfWfDR4v/edit?usp=sharing" target="_blank" rel="noopener">
+          <span class="icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></span>
+          <div>
+            <h3>Dispensaciones (datos sintéticos)</h3>
+            <p>Hoja de cálculo con las dispensaciones que usaremos en el ejercicio.</p>
+          </div>
+          <span class="abrir">Abrir en nueva pestaña<span class="sr-only"> (se abre en una pestaña nueva)</span></span>
+        </a>
+        <a class="herramienta" href="https://drive.google.com/drive/folders/1IrRRrs8Hy-ZgoTLMrWCuidBaohPsI47x?usp=sharing" target="_blank" rel="noopener">
+          <span class="icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+          <div>
+            <h3>Otros archivos de trabajo</h3>
+            <p>Carpeta compartida con el resto de archivos del taller.</p>
+          </div>
+          <span class="abrir">Abrir en nueva pestaña<span class="sr-only"> (se abre en una pestaña nueva)</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ HERRAMIENTAS ═════════ -->
+  <section class="apartado" id="herramientas" aria-labelledby="t-herramientas">
+    <div class="container">
+      <p class="eyebrow">Recursos</p>
+      <h2 id="t-herramientas">Herramientas</h2>
+      <p class="intro">Aplicaciones y recursos que emplearemos durante el taller.</p>
+      <div class="herramientas">
+        <a class="herramienta" href="https://embai33.github.io/Guia-vibecoding/" target="_blank" rel="noopener">
+          <span class="icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></span>
+          <div>
+            <h3>Guía de vibe coding para dummies sanitarios</h3>
+            <p>Introducción práctica al vibe coding pensada para profesionales sanitarios.</p>
+          </div>
+          <span class="abrir">Abrir en nueva pestaña<span class="sr-only"> (se abre en una pestaña nueva)</span></span>
+        </a>
+        <a class="herramienta" href="https://embai33.github.io/GuiaARV/" target="_blank" rel="noopener">
+          <span class="icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5a4.95 4.95 0 0 1-7-7l10-10a4.95 4.95 0 0 1 7 7z"/><path d="M8.5 8.5l7 7"/></svg></span>
+          <div>
+            <h3>Guía de consulta de medicamentos antirretrovirales</h3>
+            <p>Consulta rápida de los medicamentos antirretrovirales.</p>
+          </div>
+          <span class="abrir">Abrir en nueva pestaña<span class="sr-only"> (se abre en una pestaña nueva)</span></span>
+        </a>
+        <a class="herramienta" href="https://embai33.github.io/ADH-PER-VIH/" target="_blank" rel="noopener">
+          <span class="icono" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></span>
+          <div>
+            <h3>Aplicación para cálculo de adherencia y persistencia al TAR</h3>
+            <p>Aplicación completa, el ejemplo de hasta dónde se puede llegar.</p>
+          </div>
+          <span class="abrir">Abrir en nueva pestaña<span class="sr-only"> (se abre en una pestaña nueva)</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+  <!-- ═════════ EJERCICIO PRÁCTICO ═════════ -->
+  <section class="apartado alt" id="ejercicio" aria-labelledby="t-ejercicio">
+    <div class="container">
+      <p class="eyebrow">Manos a la obra</p>
+      <h2 id="t-ejercicio">Ejercicio práctico</h2>
+      <p class="intro">Ejercicio guiado para crear una aplicación desde cero, paso a paso.</p>
+<!--EJERCICIO-->
+<div class="ej-info"><p><strong>Material:</strong> el Excel de dispensaciones (370 pacientes, 6.198 dispensaciones de DOVATO, 12 columnas). Son <strong>datos sintéticos</strong>, extraídos de <code>DISPENSACIONES_TAR_2019-2025_sinteticos.xlsx</code>: imitan la estructura de un fichero real, pero no corresponden a ningún paciente.</p><p><strong>Herramienta:</strong> Claude Code, en una carpeta que contenga el Excel. El resultado es un artefacto (página web).</p></div>
+<nav class="ej-indice" aria-label="Pasos del ejercicio"><a href="#paso-0">Antes de empezar</a><a href="#paso-1">Paso 1</a><a href="#paso-2">Paso 2</a><a href="#paso-3">Paso 3</a><a href="#paso-4">Paso 4</a><a href="#paso-extra">Extra</a></nav>
+<details class="paso" id="paso-0" open><summary><span class="paso-chip">Paso 0</span><span class="paso-titulo">Antes de empezar</span></summary><div class="paso-cuerpo"><ol><li>Crear una carpeta <code>taller-adh-per</code> y copiar dentro el Excel de dispensaciones.</li><li>Abrir Claude Code en esa carpeta.</li><li>(Solo para el paso extra) Tener cuenta de GitHub.</li></ol>
+<p><strong>Reglas del juego para los asistentes</strong></p>
+<ul><li>Se copia y pega el prompt tal cual. No hay que saber programar.</li><li>Después de cada paso, <strong>comprobar</strong> el resultado con los ejercicios de la guía antes de pasar al siguiente. Es la parte más importante del taller.</li><li>Si algo falla o no les gusta, se lo dicen a Claude con sus palabras («el gráfico se ve muy pequeño», «esto da un error»).</li></ul></div></details>
+<details class="paso" id="paso-1"><summary><span class="paso-chip">Paso 1</span><span class="paso-titulo">Cargar y conocer los datos</span></summary><div class="paso-cuerpo"><div class="ej-rapido"><div><span class="ej-label">Objetivo</span><p>Tener una página web que lea el Excel y nos diga qué contiene y si los datos tienen problemas.</p></div><div><span class="ej-label">Qué le pedimos a la IA</span><p>Que lea el Excel para entender sus columnas y que construya una página con la que podamos subir el archivo y ver un resumen y un control de calidad.</p></div><div><span class="ej-label">¿Por qué este paso?</span><p>Antes de calcular nada hay que saber con qué trabajamos. En los datos reales siempre hay duplicados y devoluciones, y conviene verlos antes de que contaminen los resultados.</p></div></div><div class="prompt"><div class="prompt-cab"><span>Prompt</span><button type="button" class="btn-copiar" aria-label="Copiar el prompt">Copiar</button></div><pre><code>Tengo un Excel de dispensaciones de farmacia hospitalaria de pacientes con VIH, guardado en esta carpeta. Cada fila es una dispensación de DOVATO a un paciente.
+
+Primero lee el archivo para entender qué columnas tiene.
+
+Después crea un artefacto (una página web, en español, con diseño sencillo y limpio) donde yo pueda subir ese Excel y me muestre:
+1. Número de filas, número de pacientes distintos y fecha de la primera y de la última dispensación.
+2. Un control de calidad: cuántas filas están duplicadas exactamente y cuántas tienen cantidad 0 o negativa (devoluciones).
+3. Una tabla con las primeras 20 filas.
+4. Un gráfico de barras con el número de dispensaciones por año.
+
+El archivo debe procesarse en mi navegador, sin enviarlo a ningún sitio.</code></pre></div><div class="ej-bloque"><span class="ej-label">Qué esperamos obtener</span><p>Una página con una zona para subir el archivo. Al cargar el Excel de dispensaciones aparecen las cifras, el control de calidad, la tabla y el gráfico.</p></div><div class="ej-bloque"><span class="ej-label">Propuesta de ejercicios para evaluar el funcionamiento</span><div class="tabla-ej"><table><thead><tr><th>Comprobación</th><th>Resultado esperado</th></tr></thead><tbody><tr><td>Filas / pacientes</td><td>6.198 filas · 370 pacientes</td></tr><tr><td>Fechas</td><td>01/01/2019 a 31/12/2025</td></tr><tr><td>Duplicados exactos</td><td>15</td></tr><tr><td>Cantidad ≤ 0</td><td>22</td></tr><tr><td>Dispensaciones por año</td><td>2019: 326 · 2020: 511 · 2021: 706 · 2022: 935 · 2023: 1.113 · 2024: 1.226 · 2025: 1.381</td></tr><tr><td>Contrastar con Excel</td><td>Quitar duplicados y contar Id únicos en Excel da las mismas cifras</td></tr><tr><td>Probar un fallo</td><td>Subir un archivo que no sea el Excel: la página debería avisar, no romperse</td></tr></tbody></table></div></div><div class="ej-bloque"><span class="ej-label">Aprendizajes o puntos a tener en cuenta</span><ul><li>La IA lee el archivo y adapta el código a <strong>nuestras</strong> columnas. Por eso conviene dejarlo en la carpeta.</li><li>Toda app de datos empieza por una <strong>auditoría de los datos</strong>, no por el cálculo.</li><li>«Procesado en el navegador» es una decisión de privacidad que se puede pedir explícitamente. Aquí los datos son sintéticos, pero con datos reales sería imprescindible.</li><li>Cada alumno tendrá una página con diseño distinto. Es normal: el resultado no es único, pero los números sí deben coincidir.</li></ul></div></div></details>
+<details class="paso" id="paso-2"><summary><span class="paso-chip">Paso 2</span><span class="paso-titulo">Adherencia (PDC)</span></summary><div class="paso-cuerpo"><div class="ej-rapido"><div><span class="ej-label">Objetivo</span><p>Calcular el PDC de cada paciente y el resumen global.</p></div><div><span class="ej-label">Qué le pedimos a la IA</span><p>Que depure los datos y aplique, con las reglas que le damos, el método de la proporción de días cubiertos.</p></div><div><span class="ej-label">¿Por qué este paso?</span><p>Es el primer cálculo clínico. Aquí se ve que la IA ejecuta <strong>nuestras</strong> reglas: si las definimos con claridad, salen los números que esperamos. Si no, se inventa las suyas.</p></div></div><div class="prompt"><div class="prompt-cab"><span>Prompt</span><button type="button" class="btn-copiar" aria-label="Copiar el prompt">Copiar</button></div><pre><code>Amplía la página para calcular la adherencia de cada paciente con el método PDC (proporción de días cubiertos).
+
+Primero depura los datos: elimina las filas duplicadas exactas y las de cantidad 0 o negativa.
+
+Reglas de cálculo:
+- Cada comprimido equivale a 1 día de tratamiento. Los días de suministro de una dispensación son igual a su Cantidad.
+- Para cada paciente, ordena sus dispensaciones por fecha. La medicación de una dispensación empieza el día en que se dispensa o, si al paciente aún le quedaba medicación de la anterior, el día siguiente a que esta se acabe. Así, un mismo día nunca se cuenta dos veces: si recoge antes de tiempo, los días sobrantes se desplazan hacia delante.
+- El periodo de cada paciente va desde su primera dispensación hasta su última. Duración del periodo = fecha de la última dispensación menos fecha de la primera. La cantidad dispensada en la última dispensación NO cuenta, porque no sabemos cuándo volverá.
+- PDC = días cubiertos dentro del periodo / días del periodo x 100 (máximo 100 %).
+- Los pacientes con una sola dispensación no se pueden evaluar: exclúyelos y cuéntalos aparte.
+- Un paciente es adherente si su PDC es 90 % o más.
+
+Muestra:
+1. Pacientes evaluables y excluidos.
+2. PDC media y mediana, y el porcentaje de pacientes adherentes.
+3. Un gráfico con el número de pacientes por tramos de PDC: menos de 50 %, 50-80 %, 80-90 % y 90 % o más.
+4. Una tabla por paciente (Id, nº de dispensaciones, primera y última fecha, días del periodo, días cubiertos y PDC), ordenable por cualquier columna. Al hacer clic en un paciente, que se vea el detalle de sus dispensaciones: fecha, cantidad y desde qué día hasta qué día cubre cada una.</code></pre></div><div class="ej-bloque"><span class="ej-label">Qué esperamos obtener</span><p>La página anterior, ahora con resultados de adherencia, un gráfico y una tabla por paciente con detalle al hacer clic.</p></div><div class="ej-bloque"><span class="ej-label">Propuesta de ejercicios para evaluar el funcionamiento</span><div class="tabla-ej"><table><thead><tr><th>Comprobación</th><th>Resultado esperado</th></tr></thead><tbody><tr><td>Evaluables / excluidos</td><td>362 evaluables · 8 excluidos (una sola dispensación)</td></tr><tr><td>PDC global</td><td>Media ≈ 90,3 % · mediana ≈ 96,5 % · adherentes ≈ 64,9 %</td></tr><tr><td>Tramos</td><td>&lt; 50 %: 7 · 50-80 %: 56 · 80-90 %: 64 · ≥ 90 %: 235</td></tr><tr><td>Paciente <strong>211603</strong> (6 dispensaciones de 90 días, recogidas algo adelantadas)</td><td>Periodo 435 días · 435 cubiertos · PDC 100 %</td></tr><tr><td>Paciente <strong>211237</strong> (6 dispensaciones, con huecos)</td><td>Periodo 301 días · 210 cubiertos · PDC 69,8 %</td></tr><tr><td>Paciente <strong>211201</strong> (una sola dispensación)</td><td>Aparece como excluido</td></tr><tr><td><strong>Verificación a mano:</strong> elegir un paciente, abrir su detalle y comprobar con calculadora o Excel que los días cubiertos cuadran</td><td>Coincide</td></tr><tr><td><strong>Modificación:</strong> «cambia el umbral de adherencia a 80 %»</td><td>Adherentes ≈ 82,6 % (y con 95 %: ≈ 57,5 %)</td></tr></tbody></table></div>
+<p class="nota">Tolerancia: diferencias de una décima por redondeo son aceptables. Si la diferencia es mayor, hay que revisar qué regla ha interpretado distinto la IA.</p></div><div class="ej-bloque"><span class="ej-label">Aprendizajes o puntos a tener en cuenta</span><ul><li><strong>La IA no sabe qué es «el PDC» de tu hospital: lo que sabe es lo que le escribes.</strong> Las reglas (¿cuenta la última dispensación? ¿qué pasa con las recogidas anticipadas?) son decisiones clínicas y metodológicas, no técnicas.</li><li>Por eso el prompt lleva la definición paso a paso. Un prompt que solo dijera «calcula el PDC» daría un resultado razonable… pero quizá distinto al tuyo.</li><li><strong>Hay que verificar siempre.</strong> El detalle por paciente existe para poder comprobar a mano un caso.</li><li>Simplificaciones de este prototipo: 1 comprimido al día para todos (la posología real no se lee) y las devoluciones se descartan en vez de restarse de la dispensación original.</li></ul></div></div></details>
+<details class="paso" id="paso-3"><summary><span class="paso-chip">Paso 3</span><span class="paso-titulo">Persistencia a 6 y 12 meses</span></summary><div class="paso-cuerpo"><div class="ej-rapido"><div><span class="ej-label">Objetivo</span><p>Saber qué porcentaje de pacientes sigue en tratamiento a los 6 y a los 12 meses.</p></div><div><span class="ej-label">Qué le pedimos a la IA</span><p>Que defina el abandono con un periodo de gracia de 90 días y calcule el porcentaje de pacientes persistentes a 180 y 365 días, solo en pacientes que empiezan el tratamiento durante el periodo de estudio.</p></div><div><span class="ej-label">¿Por qué este paso?</span><p>Es la otra cara de la moneda: la adherencia mide <strong>cómo</strong> toma la medicación quien está en tratamiento; la persistencia mide <strong>cuánto tiempo</strong> se mantiene en él. Empezamos con un porcentaje sencillo que todos entienden y que nos prepara para entender la curva.</p></div></div><div class="prompt"><div class="prompt-cab"><span>Prompt</span><button type="button" class="btn-copiar" aria-label="Copiar el prompt">Copiar</button></div><pre><code>Amplía la página para medir la persistencia al tratamiento. Usa los mismos datos depurados y la misma cobertura día a día del paso anterior.
+
+Reglas:
+- Solo pacientes nuevos: como el fichero empieza el 01/01/2019, un paciente cuya primera dispensación sea de los primeros 4 meses podría llevar ya tiempo en tratamiento y no sabemos cuándo empezó. Incluye únicamente a los pacientes cuya primera dispensación sea a partir del 01/05/2019 y cuenta cuántos se excluyen por este motivo.
+- Tiempo 0 de cada paciente = fecha de su primera dispensación. En este caso SÍ se incluyen los pacientes con una sola dispensación.
+- Un paciente abandona el tratamiento cuando pasa más de 90 días seguidos sin medicación. Esto ocurre si entre el último día cubierto por una dispensación y la siguiente dispensación hay más de 90 días sin cubrir, o si después de su última dispensación pasan más de 90 días sin medicación hasta la fecha más reciente de todo el fichero.
+- La fecha de abandono es el último día cubierto antes de ese hueco.
+- Un paciente es persistente a los 6 meses (180 días) si no ha abandonado antes de 180 días desde su tiempo 0. Igual para 12 meses (365 días).
+- Si a un paciente que no ha abandonado todavía no le ha dado tiempo a cumplir 180 (o 365) días de seguimiento hasta la fecha final del fichero, no se puede saber: exclúyelo de ese cálculo y cuéntalo aparte.
+
+Muestra:
+1. El porcentaje de pacientes persistentes a 6 y a 12 meses, con el número de persistentes y de pacientes evaluables, y cuántos se han excluido por seguimiento insuficiente.
+2. El número total de pacientes que han abandonado.
+3. Una tabla por paciente con: Id, tiempo 0, fecha de abandono (o vacío si no ha abandonado), días hasta el abandono o hasta el final del seguimiento, y si es persistente a 6 y 12 meses. Que sea ordenable.</code></pre></div><div class="ej-bloque"><span class="ej-label">Qué esperamos obtener</span><p>Una sección de persistencia con dos porcentajes destacados y una tabla por paciente.</p></div><div class="ej-bloque"><span class="ej-label">Propuesta de ejercicios para evaluar el funcionamiento</span><div class="tabla-ej"><table><thead><tr><th>Comprobación</th><th>Resultado esperado</th></tr></thead><tbody><tr><td>Pacientes incluidos</td><td>316 de 370 (54 excluidos por empezar en los 4 primeros meses)</td></tr><tr><td>Persistencia a 6 meses</td><td>288 de 293 evaluables = <strong>98,3 %</strong> (23 excluidos por seguimiento insuficiente)</td></tr><tr><td>Persistencia a 12 meses</td><td>241 de 269 evaluables = <strong>89,6 %</strong> (47 excluidos)</td></tr><tr><td>Abandonos totales</td><td>83 de 316</td></tr><tr><td>Paciente <strong>212097</strong></td><td>PDC 100 % en el paso 2, pero <strong>abandona el 02/05/2025</strong> (día 449). La tabla de persistencia debe mostrarlo</td></tr><tr><td>Paciente <strong>211201</strong></td><td>Excluido de la adherencia, pero en persistencia <strong>abandona el 09/07/2024</strong> (día 29)</td></tr><tr><td><strong>Modificación:</strong> «cambia el periodo de gracia a 60 días»</td><td>Baja la persistencia: 95,9 % a 6 meses y 86,6 % a 12 meses</td></tr><tr><td>Más modificaciones</td><td>Con 30 días: 88,4 % y 78,1 %. Con 120 días: 98,3 % y 90,0 %. La persistencia nunca baja al ampliar el periodo de gracia</td></tr></tbody></table></div></div><div class="ej-bloque"><span class="ej-label">Aprendizajes o puntos a tener en cuenta</span><ul><li><strong>Adherencia y persistencia no son lo mismo.</strong> El paciente 212097 es perfecto en PDC y aun así abandona. Es el mejor ejemplo para el debate clínico.</li><li><strong>¿Quién entra en el estudio?</strong> Sin la regla de «pacientes nuevos» se mezclarían pacientes que empiezan con pacientes que ya llevaban tiempo tomando el fármaco, y la persistencia saldría inflada. Es una decisión metodológica que la IA no toma sola.</li><li>El <strong>periodo de gracia</strong> es una decisión del investigador y cambia mucho el resultado. Conviene pedirle a la IA que sea un parámetro modificable.</li><li>El porcentaje simple tiene un problema: los pacientes con poco seguimiento se tiran a la basura (47 a los 12 meses). <strong>Justo eso resuelve la curva de Kaplan-Meier</strong>, el siguiente paso.</li><li>Limitación asumida: el fichero no dice si alguien ha fallecido, se ha trasladado o ha cambiado de tratamiento. Todo hueco se interpreta como abandono. Además, aquí solo hay DOVATO: quien cambie a otro fármaco aparece como abandono del DOVATO.</li></ul></div></div></details>
+<details class="paso" id="paso-4"><summary><span class="paso-chip">Paso 4</span><span class="paso-titulo">Curva de Kaplan-Meier</span></summary><div class="paso-cuerpo"><div class="ej-rapido"><div><span class="ej-label">Objetivo</span><p>Dibujar la curva de persistencia usando a todos los pacientes nuevos, incluso a los que tienen poco seguimiento.</p></div><div><span class="ej-label">Qué le pedimos a la IA</span><p>Que construya la curva de Kaplan-Meier con los abandonos y las censuras ya calculados en el paso anterior.</p></div><div><span class="ej-label">¿Por qué este paso?</span><p>Es el resultado que más se enseña en publicaciones y el que mejor comprenden los clínicos. Además cierra el círculo: la curva aprovecha a los pacientes que en el paso 3 tuvimos que excluir.</p></div></div><div class="prompt"><div class="prompt-cab"><span>Prompt</span><button type="button" class="btn-copiar" aria-label="Copiar el prompt">Copiar</button></div><pre><code>Amplía la página con una curva de persistencia de Kaplan-Meier, usando a los mismos pacientes nuevos y los abandonos calculados en el apartado de persistencia.
+
+Reglas:
+- Para cada paciente, el tiempo es el número de días desde su tiempo 0 hasta su abandono. Si no ha abandonado, el tiempo es hasta la fecha más reciente del fichero y se considera un paciente "censurado" (sigue en tratamiento, pero no podemos observarlo más).
+- Calcula la curva con el método de Kaplan-Meier.
+
+Muestra:
+1. La curva: eje horizontal en meses (de 0 a 60), eje vertical de 0 a 100 % de pacientes persistentes, con una marca pequeña en cada paciente censurado y líneas discontinuas verticales en los 6 y 12 meses.
+2. Debajo, una tabla con la persistencia estimada a los 6, 12, 24 y 36 meses (180, 365, 730 y 1.095 días) y el número de pacientes aún en seguimiento en cada momento.
+3. La mediana de persistencia, o la indicación de que no se alcanza.
+4. Un botón para descargar el gráfico como imagen.
+
+Añade una explicación breve, de dos o tres frases y en lenguaje de farmacéutico, de qué es un paciente censurado y por qué Kaplan-Meier lo tiene en cuenta.</code></pre></div><div class="ej-bloque"><span class="ej-label">Qué esperamos obtener</span><p>Una curva escalonada descendente, con marcas de censura, una tabla de valores y una explicación.</p></div><div class="ej-bloque"><span class="ej-label">Propuesta de ejercicios para evaluar el funcionamiento</span><div class="tabla-ej"><table><thead><tr><th>Comprobación</th><th>Resultado esperado</th></tr></thead><tbody><tr><td>Persistencia a 6 meses</td><td>≈ <strong>98,0 %</strong> (288 pacientes aún en seguimiento)</td></tr><tr><td>Persistencia a 12 meses</td><td>≈ <strong>90,2 %</strong> (241 en seguimiento)</td></tr><tr><td>Persistencia a 24 meses</td><td>≈ 81,6 % (178 en seguimiento)</td></tr><tr><td>Persistencia a 36 meses</td><td>≈ 75,7 % (131 en seguimiento)</td></tr><tr><td>Mediana</td><td>No se alcanza (la curva no baja del 50 %; el valor mínimo es ≈ 56 %)</td></tr><tr><td>Eventos / censuras</td><td>83 abandonos · 233 censurados</td></tr><tr><td>Comparar con el paso 3</td><td>98,3 % frente a 98,0 % a 6 meses; 89,6 % frente a 90,2 % a 12 meses. Parecidos, pero no idénticos</td></tr><tr><td><strong>Modificación:</strong> «cambia el periodo de gracia a 60 días» y mirar cómo se mueve la curva</td><td>La curva baja (más abandonos)</td></tr><tr><td><strong>Pregunta a la IA:</strong> «explícame con el paciente 212097 cómo se ha usado en la curva»</td><td>Debe decir que abandona el día 449 (evento, no censura)</td></tr></tbody></table></div></div><div class="ej-bloque"><span class="ej-label">Aprendizajes o puntos a tener en cuenta</span><ul><li><strong>La curva nunca sube</strong> y cada escalón es un abandono. Si sube, hay un error.</li><li>El ejercicio enseña el concepto clave de <strong>censura</strong> sin una sola fórmula.</li><li>En la cola de la curva quedan muy pocos pacientes (41 a los 5 años): hay que interpretarla con cautela. Por eso conviene mostrar siempre el número de pacientes en riesgo.</li><li>Aquí las dos estimaciones se parecen porque hay pocas censuras tempranas; en cohortes con mucha censura, el porcentaje simple puede alejarse bastante.</li><li>Cuando en el futuro quieran comparar dos grupos (dos fármacos), necesitarán el test de log-rank y los intervalos de confianza. Es el tipo de cosas que tiene la app completa y que el prototipo no incluye.</li></ul></div></div></details>
+<details class="paso" id="paso-extra"><summary><span class="paso-chip">Extra · opcional</span><span class="paso-titulo">Compartir la app por GitHub</span></summary><div class="paso-cuerpo"><div class="ej-rapido"><div><span class="ej-label">Objetivo</span><p>Publicar el prototipo para que cualquiera pueda abrirlo con un enlace.</p></div><div><span class="ej-label">Qué le pedimos a la IA</span><p>Que prepare un repositorio con solo la aplicación (sin datos) y nos guíe para publicarla con GitHub Pages.</p></div><div><span class="ej-label">¿Por qué este paso?</span><p>Un prototipo que solo funciona en tu ordenador no se comparte. Además es la ocasión de hablar de privacidad.</p></div></div><div class="prompt"><div class="prompt-cab"><span>Prompt</span><button type="button" class="btn-copiar" aria-label="Copiar el prompt">Copiar</button></div><pre><code>Quiero publicar esta aplicación en GitHub para compartirla, pero SIN subir el Excel ni ningún dato de pacientes.
+
+1. Guarda la aplicación como un único archivo index.html.
+2. Crea un archivo .gitignore que excluya todos los Excel (*.xlsx, *.xls) y los CSV.
+3. Crea un README breve en español que explique qué hace la aplicación y que los datos se cargan desde el navegador y no se guardan en ningún sitio.
+4. Prepara el repositorio de git en local.
+5. No subas nada a GitHub todavía: explícame paso a paso cómo crear el repositorio y activar GitHub Pages, y espera mi confirmación para cada acción.</code></pre></div><div class="ej-bloque"><span class="ej-label">Qué esperamos obtener</span><p>Un repositorio local con <code>index.html</code>, <code>.gitignore</code> y <code>README.md</code>, y las instrucciones para publicarlo.</p></div><div class="ej-bloque"><span class="ej-label">Propuesta de ejercicios para evaluar el funcionamiento</span><div class="tabla-ej"><table><thead><tr><th>Comprobación</th><th>Resultado esperado</th></tr></thead><tbody><tr><td>Comprobar que el Excel <strong>no</strong> está en el repositorio</td><td>No aparece en <code>git status</code> ni se puede añadir</td></tr><tr><td>Abrir la página publicada y cargar el Excel</td><td>Funciona igual que en local</td></tr><tr><td>Abrir la página sin cargar datos</td><td>No muestra ningún dato de pacientes</td></tr></tbody></table></div></div><div class="ej-bloque"><span class="ej-label">Aprendizajes o puntos a tener en cuenta</span><ul><li><strong>Nunca subir datos de pacientes a un repositorio</strong>, ni siquiera anonimizados ni en un repositorio privado. Una vez subidos quedan en el historial. Hoy el Excel es sintético, pero el hábito debe ser el mismo que con datos reales.</li><li>Conviene decirle a la IA lo que <strong>no</strong> tiene que hacer, y pedirle que espere confirmación antes de acciones que no se pueden deshacer.</li><li>Si la app lleva los datos dentro del HTML (en vez de cargarlos desde el navegador), el problema es el mismo: hay que revisarlo antes de publicar.</li></ul></div></div></details>
+<!--/EJERCICIO-->
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="franja"></div>
+  <div class="footer-in">
+    <span class="titulo">FOCO VIH · Taller: casos de uso hospitalario powered by <span class="ai">AI</span></span>
+    <a href="#inicio">Volver arriba ↑</a>
+  </div>
+</footer>
+
+<!-- Modal de información -->
+<div class="modal-overlay" id="modalInfo" role="dialog" aria-modal="true" aria-labelledby="t-modal">
+  <div class="modal-box">
+    <h2 id="t-modal">Acerca de esta aplicación</h2>
+    <p>Web de apoyo del taller «Casos de uso hospitalario powered by AI», dentro de la reunión FOCO VIH. Reúne el programa, los materiales de trabajo y las herramientas de la sesión.</p>
+    <p class="disclaimer">Los contenidos se ofrecen con carácter exclusivamente formativo e informativo. Los datos utilizados en los ejercicios son sintéticos. Esta web no sustituye el criterio de un profesional sanitario ni debe utilizarse como único criterio para la toma de decisiones clínicas.</p>
+    <div class="modal-cierre"><button class="btn btn-primary" id="btnCerrar">Cerrar</button></div>
+    <div class="modal-footer">
+      <span>Aplicación creada por</span>
+      <a href="https://www.linkedin.com/in/emilio-monte-boquet" target="_blank" rel="noopener">EMB</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Modal «Acerca de»
+  (function () {
+    var modal = document.getElementById('modalInfo');
+    var abrir = document.getElementById('btnInfo');
+    var cerrar = document.getElementById('btnCerrar');
+    function open() { modal.classList.add('abierto'); cerrar.focus(); }
+    function close() { modal.classList.remove('abierto'); abrir.focus(); }
+    abrir.addEventListener('click', open);
+    cerrar.addEventListener('click', close);
+    modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('abierto')) close(); });
+  })();
+
+  // Apartado activo en el menú
+  (function () {
+    var enlaces = Array.prototype.slice.call(document.querySelectorAll('header nav a'));
+    var secciones = enlaces.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+    function actualizar() {
+      var marca = window.scrollY + (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--alto-header')) || 64) + 80;
+      var activo = -1;
+      secciones.forEach(function (s, i) { if (s && s.offsetTop <= marca) activo = i; });
+      // Al final de la página el último apartado no llega arriba: se da por activo
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) activo = secciones.length - 1;
+      enlaces.forEach(function (a, i) { a.classList.toggle('activo', i === activo); if (i === activo) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    }
+    window.addEventListener('scroll', actualizar, { passive: true });
+    window.addEventListener('resize', actualizar);
+    actualizar();
+  })();
+
+  // Ejercicio práctico: copiar prompts y abrir el paso enlazado
+  (function () {
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest('.btn-copiar');
+      if (!b) return;
+      var texto = b.closest('.prompt').querySelector('code').innerText;
+      function ok() { b.textContent = '¡Copiado!'; b.classList.add('ok'); setTimeout(function () { b.textContent = 'Copiar'; b.classList.remove('ok'); }, 1800); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(ok, function () { copiarAlternativo(texto); ok(); });
+      } else { copiarAlternativo(texto); ok(); }
+    });
+    function copiarAlternativo(t) {
+      var ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (err) {} document.body.removeChild(ta);
+    }
+    function abrirPaso(id) {
+      var d = document.getElementById(id);
+      if (d && d.tagName === 'DETAILS') { d.open = true; setTimeout(function () { d.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30); return true; }
+      return false;
+    }
+    document.querySelectorAll('.ej-indice a').forEach(function (a) {
+      a.addEventListener('click', function (e) { e.preventDefault(); var id = a.getAttribute('href').slice(1); history.replaceState(null, '', '#' + id); abrirPaso(id); });
+    });
+    if (location.hash) abrirPaso(location.hash.slice(1));
+  })();
+</script>
+</body>
+</html>
