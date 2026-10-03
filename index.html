@@ -131,6 +131,7 @@
     box-shadow: 0 1px 4px rgba(7,29,73,0.08);
     transition: box-shadow 0.2s, transform 0.15s;
   }
+  .opcion:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .opcion:hover { box-shadow: 0 6px 18px rgba(7,29,73,0.15); transform: translateY(-2px); }
   .opcion .icono {
     width: 44px; height: 44px; border-radius: 10px; margin-bottom: 0.4rem;
@@ -368,6 +369,7 @@
     </a>
     <nav aria-label="Secciones de la web">
       <a href="#programa">Programa</a>
+      <a href="intro/FOCO_VIH_Taller_Casos_de_Uso_E_Monte.html" target="_blank" rel="noopener">Introducción<span class="sr-only"> (se abre en una pestaña nueva)</span></a>
       <a href="#materiales">Materiales de trabajo</a>
       <a href="#herramientas">Herramientas</a>
       <a href="#ejercicio">Ejercicio práctico</a>
@@ -396,6 +398,14 @@
           <h3>Programa</h3>
           <p>Agenda y contenidos de la sesión.</p>
           <span class="ir">Ver programa</span>
+        </a>
+        <a class="opcion" href="intro/FOCO_VIH_Taller_Casos_de_Uso_E_Monte.html" target="_blank" rel="noopener" role="listitem">
+          <span class="icono" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8M8 9l3 2-3 2"/></svg>
+          </span>
+          <h3>Introducción</h3>
+          <p>Presentación de apertura del taller.</p>
+          <span class="ir">Abrir introducción<span class="sr-only"> (se abre en una pestaña nueva)</span></span>
         </a>
         <a class="opcion" href="#materiales" role="listitem">
           <span class="icono" aria-hidden="true">
@@ -606,7 +616,7 @@
 
   // Apartado activo en el menú
   (function () {
-    var enlaces = Array.prototype.slice.call(document.querySelectorAll('header nav a'));
+    var enlaces = Array.prototype.slice.call(document.querySelectorAll('header nav a[href^="#"]'));
     var secciones = enlaces.map(function (a) { return document.querySelector(a.getAttribute('href')); });
     function actualizar() {
       var marca = window.scrollY + (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--alto-header')) || 64) + 80;
